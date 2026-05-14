@@ -90,10 +90,9 @@ Crontab:
 backup.sh:
 ```bash
 #!/bin/bash
-# Создаем директорию, если её нет
+
 mkdir -p /tmp/backup
 
-# Запуск rsync с полными путями для надежности cron
 if /usr/bin/rsync -av --delete --exclude='.*' /root/ /tmp/backup; then
     /usr/bin/logger "Rsync backup: SUCCESS"
 else
