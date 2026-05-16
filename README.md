@@ -30,16 +30,18 @@
 
 ![YC Balancer](img/balancer.png)
 ![страница IP-адреса балансировщика](img/web.png)
-![страница IP-адреса балансировщика (повторное открытие)](img/web refreshed.png)
+![страница IP-адреса балансировщика-повторное открытие](img/web_refreshed.png)
 ![output + curl запросы](img/output+curl.png)
 
 
 
 
-<details> 
-  <summary>Terraform Playbook: </summary>
-    [`files/cloud-init.yaml`](files/cloud-init.yaml)
-    [`files/outputs.tf`](files/outputs.tf)
-    [`files/variables.tf`](files/variables.tf)
-    [`files/main.tf`](files/main.tf)
+<details>
+<summary>Terraform Playbook:</summary>
+
+- [cloud-init.yaml](files/cloud-init.yaml)
+- [outputs.tf](files/outputs.tf)
+- [variables.tf](files/variables.tf)
+- [main.tf](files/main.tf)
+
 </details>
