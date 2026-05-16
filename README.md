@@ -25,17 +25,6 @@
 
 3. Скриншот страницы, которая открылась при запросе IP-адреса балансировщика.
 
-
-
-
-![YC Balancer](img/balancer.png)
-![страница IP-адреса балансировщика](img/web.png)
-![страница IP-адреса балансировщика-повторное открытие](img/web_refreshed.png)
-![output + curl запросы](img/output+curl.png)
-
-
-
-
 <details>
 <summary>Terraform Playbook:</summary>
 
@@ -45,3 +34,16 @@
 - [main.tf](files/main.tf)
 
 </details>
+
+YC Balancer + целевые группы
+![YC Balancer](img/balancer.png)
+страница IP-адреса балансировщика
+![страница IP-адреса балансировщика](img/web.png)
+страница IP-адреса балансировщика-повторное открытие
+![страница IP-адреса балансировщика-повторное открытие](img/web_refreshed.png)
+output + curl запросы
+![output + curl запросы](img/output+curl.png)
+
+
+
+
