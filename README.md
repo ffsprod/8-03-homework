@@ -14,7 +14,7 @@
 rsync -av --delete --checksum --exclude='.*' ~/ /tmp/backup
 ```
 
-![rsync backup](img/img3.jpg)
+![rsync backup](img/img3.png)
 
 
 ## Задание 2
@@ -43,7 +43,7 @@ else
 fi
 ```
 
-![rsync crontab](img/img4.jpg)
+![rsync crontab](img/img4.png)
 
  ```cron
 >во время выполнения crontab был в конфигурации * * * * * * /root/backup.sh
