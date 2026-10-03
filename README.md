@@ -12,7 +12,6 @@
 Elasticsearch запущен. В конфигурации задано 'cluster.name: nef-cluster-$(openssl rand -hex 4)' (итог`cluster.name: nef-cluster-882dc58e`), статус кластера — `green`.
 
 ![Проверка Elasticsearch через curl](img/img1.jpg)
-$(openssl rand -hex 4)
 </details>
 
 ## Задание 2. Kibana
