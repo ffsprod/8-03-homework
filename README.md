@@ -1,61 +1,72 @@
-# Домашнее задание «Elasticsearch, Kibana, Logstash и Filebeat» — Нефедов Александр
+# Домашнее задание «RabbitMQ» — Нефедов Александр
 
-## Задание 1. Elasticsearch
+## Задание 1. Установка RabbitMQ
 
-Установите и запустите Elasticsearch, после чего поменяйте параметр `cluster_name` на случайный.
+Используя Vagrant или VirtualBox, создайте виртуальную машину и установите RabbitMQ. Добавьте management plug-in и зайдите в веб-интерфейс.
 
-Приведите скриншот команды `curl -X GET 'localhost:9200/_cluster/health?pretty'`, сделанной на сервере с установленным Elasticsearch, где будет виден нестандартный `cluster_name`.
-
-<details>
-<summary>Ответ — скриншот</summary>
-
-Elasticsearch запущен. В конфигурации задано 'cluster.name: nef-cluster-$(openssl rand -hex 4)' (итог`cluster.name: nef-cluster-882dc58e`), статус кластера — `green`.
-
-![Проверка Elasticsearch через curl](img/img1.jpg)
-$(openssl rand -hex 4)
-</details>
-
-## Задание 2. Kibana
-
-Установите и запустите Kibana.
-
-Приведите скриншот интерфейса Kibana на странице `http://<ip вашего сервера>:5601/app/dev_tools#/console`, где будет выполнен запрос `GET /_cluster/health?pretty`.
+Приложите скриншот веб-интерфейса RabbitMQ.
 
 <details>
-<summary>Ответ — скриншот</summary>
+<summary>скриншот</summary>
 
-Kibana запущена. В Dev Tools выполнен запрос `GET /_cluster/health?pretty`.
+На ВМ VirtualBox запущен RabbitMQ 3.13.7 в Docker. Management plug-in включён, веб-интерфейс доступен на порту `15672`.
 
-![Проверка кластера в Kibana Dev Tools](img/img2.jpg)
+![Веб-интерфейс RabbitMQ](img/1.jpg)
 
 </details>
 
-## Задание 3. Logstash
+## Задание 2. Отправка и получение сообщений
 
-Установите и запустите Logstash и Nginx. С помощью Logstash отправьте access-лог Nginx в Elasticsearch.
+Используя скрипты `producer.py` и `consumer.py`, проведите тестовую отправку и получение сообщения. Для работы скриптов установите Python 3 и библиотеку Pika, укажите IP-адрес машины с RabbitMQ вместо `localhost`.
 
-Приведите скриншот интерфейса Kibana, на котором видны логи Nginx.
+Запустите `producer.py`, найдите очередь `hello` в веб-интерфейсе и сделайте скриншот. Затем запустите `consumer.py` и приложите скриншот результата выполнения.
 
 <details>
-<summary>Ответ — скриншот</summary>
+<summary>скриншоты</summary>
 
-Access-лог Nginx отправляется через Logstash в Elasticsearch. В Kibana видны запросы к Nginx и поле `delivery: logstash`.
+Установлены Python 3 и Pika. Producer отправил `Hello Netology!` в очередь `hello`, в интерфейсе видно одно сообщение, готовое к получению.
 
-![Логи Nginx, отправленные через Logstash](img/img3.jpg)
+![Очередь hello с сообщением](img/2.jpg)
+
+Consumer подключился к `10.0.2.3` и получил сообщение.
+
+![Отправка и получение сообщения](img/3.jpg)
 
 </details>
 
-## Задание 4. Filebeat
+## Задание 3. Подготовка HA кластера
 
-Установите и запустите Filebeat. Переключите поставку логов Nginx с Logstash на Filebeat.
+Создайте вторую ВМ в Vagrant или VirtualBox и установите RabbitMQ. Добавьте в `/etc/hosts` имена и IP-адреса обеих машин, чтобы они могли обращаться друг к другу по имени.
 
-Приведите скриншот интерфейса Kibana, на котором видны логи Nginx, которые были отправлены через Filebeat.
+Объедините машины в кластер и создайте политику `ha-all` на все очереди. Приложите скриншоты веб-интерфейса с доступными нодами и включённой политикой, а также вывод `rabbitmqctl cluster_status` с обеих нод.
+
+Повторно запустите `producer.py` и приложите скриншот выполнения `rabbitmqadmin get queue='hello'` на каждой ноде. Отключите первую ноду, переключите `consumer.py` на вторую и приложите скриншот получения сообщения.
 
 <details>
-<summary>Ответ — скриншот</summary>
+<summary>скриншоты</summary>
 
-Logstash остановлен, доставка логов переключена на Filebeat. В Kibana видны новые запросы к Nginx, поля `delivery: filebeat` и `agent.type: filebeat`.
+Создан кластер из двух нод: `rabbit@rmq01` (`10.0.2.3`) и `rabbit@rmq02` (`10.0.2.15`). Обе ноды доступны в веб-интерфейсе.
 
-![Логи Nginx, отправленные через Filebeat](img/img4.jpg)
+![Две ноды RabbitMQ в кластере](img/4.jpg)
+
+Создана политика `ha-all` с шаблоном `.*`, параметрами `ha-mode: all` и `ha-sync-mode: automatic`.
+
+![Политика ha-all для всех очередей](img/5.jpg)
+
+Вывод `cluster_status` с первой ноды после её повторного запуска:
+
+![Статус кластера с rmq01](img/8.jpg)
+
+Вывод `cluster_status` со второй ноды:
+
+![Статус кластера с rmq02](img/9.jpg)
+
+На обеих нодах выполнен `rabbitmqadmin get` для очереди `hello`. Использован `ackmode=ack_requeue_true`, чтобы вернуть сообщение в очередь после просмотра.
+
+![Получение сообщения через rabbitmqadmin на обеих нодах](img/6.jpg)
+
+Первая нода остановлена командой `docker stop rabbitmq`. Consumer подключился ко второй ноде (`10.0.2.15`) и получил `Hello Netology!`.
+
+![Получение сообщения после остановки первой ноды](img/7.jpg)
 
 </details>
